@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:07:31 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/14 16:43:46 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/14 17:09:43 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ namespace ft
 		public:
 			typedef std::size_t size_type;
 			typedef ft::random_access_iterator<T> iterator;
-			typedef const ft::random_access_iterator<const T> const_iterator;
+			typedef ft::random_access_iterator<const T> const_iterator;
 			typedef ft::reverse_random_access_iterator<iterator>					reverse_iterator;
 			typedef ft::reverse_random_access_iterator<const_iterator>			const_reverse_iterator;
 			typedef Alloc allocator_type;
@@ -39,7 +39,6 @@ namespace ft
 			typedef typename Alloc::pointer					pointer;
 			typedef typename Alloc::const_pointer				const_pointer;
 			typedef std::ptrdiff_t difference_type;
-			typedef T* pointer;
 		private:
 			allocator_type  _alloc;
 			std::size_t _size;

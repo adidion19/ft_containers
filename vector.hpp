@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:07:31 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/10 14:37:10 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/14 14:38:08 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,10 +355,69 @@ namespace ft
 				}
 				_size += j;
 			}
-			iterator erase (iterator position);
-			iterator erase (iterator first, iterator last);
-			void swap (vector& x);
-			void clear();
+			iterator erase (iterator position)
+			{
+				unsigned int i = 0;
+				for (iterator it = begin(); it < position; it++, i++);
+				_alloc.destroy(_v + i);
+				while (position + 1 < end())
+				{
+					*position = *position + 1;
+					position++;
+				}
+				_size--;
+				return (position);
+			}
+			iterator erase (iterator first, iterator last)
+			{
+				unsigned int i = 0;
+				unsigned int diff = last - first;
+				for (iterator it = begin() ; it < last; it++, i++);
+				while (first < last)
+				{
+					last--;
+					i--;
+					_alloc.destroy(_v + i);
+				}
+				i = 0;
+				while (end() > first + diff + i)
+				{
+					*(first + i) = *(first + diff + i);
+					i++;
+				}
+				resize(_size - diff);
+				return (first);
+			}
+			void swap (vector& x)
+			{
+				Alloc alloc;
+				unsigned int size;
+				unsigned int capacity;
+				value_type *tmp;
+				
+				alloc = x._alloc;
+				capacity = x._capacity;
+				size = x._size;
+				tmp = x._v;
+
+				x._alloc = _alloc;
+				x._capacity = _capacity;
+				x._size = _size;
+				x._v = _v;
+
+				_alloc = alloc;
+				_capacity = capacity;
+				_size = size;
+				_v = tmp;
+			}
+			void clear()
+			{
+				for (unsigned int i = 0; i != this->_size; i++)
+				{
+					_alloc.destroy(&_v[i]);
+				}
+				_size = 0;
+			}
 		// ALLOCATOR:
 			allocator_type get_allocator() const
 			{
@@ -368,25 +427,97 @@ namespace ft
 
 	// FONCTIONS NON_MEMBRE:
 	template <class T, class Alloc>
-	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y);
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+	{
+		vector<T,Alloc> tmp;
+		tmp = x;
+		x = y;
+		y = tmp;
+	}
 	
 	template <class T, class Alloc>
-	  bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() == rhs.size())
+		{
+			for (unsigned int i = 0; i < rhs.size(); i++)
+			{
+				if (rhs[i] != lhs[i])
+					return (0);
+			}
+			return (1);
+		}
+		return (1);
+	}
 	
 	template <class T, class Alloc>
-	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() == rhs.size())
+		{
+			for (unsigned int i = 0; i < rhs.size(); i++)
+			{
+				if (rhs[i] != lhs[i])
+					return (1);
+			}
+			return (0);
+		}
+		return (0);
+	}
 	
 	template <class T, class Alloc>
-	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		unsigned int i = 0;
+
+		while(i < lhs.size() && i < rhs.size())
+		{
+			if (rhs[i] < lhs[i])
+				return (0);
+			if (lhs[i] < rhs[i])
+				return (1);
+			i++;
+		}
+		if (lhs.size() < rhs.size())
+			return (1);
+		else
+			return (0);
+	}
 	
 	template <class T, class Alloc>
-	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (rhs == lhs || lhs < rhs)
+			return (1);
+		return (0);
+	}
 	
 	template <class T, class Alloc>
-	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		unsigned int i = 0;
+
+		while(i < lhs.size() && i < rhs.size())
+		{
+			if (rhs[i] > lhs[i])
+				return (0);
+			if (lhs[i] > rhs[i])
+				return (1);
+			i++;
+		}
+		if (lhs.size() > rhs.size())
+			return (1);
+		else
+			return (0);
+	}
 	
 	template <class T, class Alloc>
-	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);	
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (rhs == lhs || lhs > rhs)
+			return (1);
+		return (0);
+	}	
 }
 
 #endif

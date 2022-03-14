@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:07:31 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/14 14:38:08 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/14 16:43:46 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ namespace ft
 			typedef ft::reverse_random_access_iterator<const_iterator>			const_reverse_iterator;
 			typedef Alloc allocator_type;
 			typedef T			value_type;
-			typedef const	value_type& reference;
-			typedef const	value_type& const_reference;
+			typedef typename allocator_type::reference		reference;
+			typedef typename allocator_type::const_reference	const_reference;
+			typedef typename Alloc::pointer					pointer;
+			typedef typename Alloc::const_pointer				const_pointer;
 			typedef std::ptrdiff_t difference_type;
 			typedef T* pointer;
 		private:

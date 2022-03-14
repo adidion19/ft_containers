@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:07:31 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/14 17:09:43 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/14 18:24:12 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ namespace ft
 				return ;
 			}
 			template <class InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL) : _alloc(alloc)
+			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL) : _alloc(alloc), _size(0), _capacity(0)
 			{
 				InputIterator tmp = first;
 				for (; tmp != last; tmp++)
@@ -258,10 +258,13 @@ namespace ft
 			{
 				int i = 0;
 				InputIterator tmp = last;
-				while (tmp-- != first)
+				while (tmp != first)
+				{
 					i++;
-				resize(0);
+					tmp--;
+				}
 				reserve(i);
+				resize(0);
 				_size = i;
 				while (first != last)
 				{
@@ -363,7 +366,7 @@ namespace ft
 				_alloc.destroy(_v + i);
 				while (position + 1 < end())
 				{
-					*position = *position + 1;
+					*position = *(position + 1);
 					position++;
 				}
 				_size--;

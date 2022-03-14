@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:14:46 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/09 16:07:21 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/14 18:13:34 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,12 @@ namespace ft
 	random_access_iterator<Iter> operator+( typename random_access_iterator<Iter>::difference_type n, const random_access_iterator<Iter>& it )
 	{
 		return (random_access_iterator<Iter>(it.base() + n));
+	}
+
+	template < class T >
+	size_t		operator-(random_access_iterator<T> const & a, random_access_iterator<T> const & b)
+	{
+		return (a.base() - b.base());
 	}
 
 	template< class Iter >

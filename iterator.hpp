@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:14:46 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/14 18:13:34 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/15 11:02:37 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ namespace ft
 
 			pointer operator->() const
 			{
-				return (*_ptr);
+				return (_ptr);
 			}
 
 			reference operator[](size_t n)
@@ -114,13 +114,13 @@ namespace ft
 			{
 				random_access_iterator it = *this;
 				_ptr++;
-				return (*this);
+				return (it);
 			}
 			random_access_iterator operator--( int )
 			{
 				random_access_iterator it = *this;
 				_ptr--;
-				return (*this);
+				return (it);
 			}
 			random_access_iterator operator+( difference_type n ) const
 			{
@@ -129,7 +129,12 @@ namespace ft
 
 			random_access_iterator operator-( difference_type n ) const
 			{
-				return (random_access_iterator((base() - n)));
+				return (random_access_iterator(base() - n));
+			}
+
+			difference_type		operator- (random_access_iterator const & b)
+			{
+				return (base() - b.base());
 			}
 
 			random_access_iterator& operator+=( difference_type n )

@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:07:31 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/14 18:24:12 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/15 13:19:17 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,24 +189,24 @@ namespace ft
 			}
 			void reserve (size_type n)
 			{
-				if (n >= this->max_size())
+				if (n > max_size())
 					throw std::out_of_range("vector");
-				if (n <= this->capacity())
+				if (n < capacity())
 					return ;
 
-				pointer old_v = this->_v;
-				this->_v = this->_alloc.allocate(n);
+				pointer old_v = _v;
+				_v = _alloc.allocate(n);
 
-				for (unsigned int i = 0; i != this->_size; i++)
+				for (unsigned int i = 0; i != _size; i++)
 				{
-					this->_alloc.construct(&this->_v[i], old_v[i]);
+					_alloc.construct(&_v[i], old_v[i]);
 				}
-				for (unsigned int i = 0; i != this->_size; i++)
+				for (unsigned int i = 0; i != _size; i++)
 				{
-					this->_alloc.destroy(&old_v[i]);
+					_alloc.destroy(&old_v[i]);
 				}
-				this->_alloc.deallocate(old_v, this->_capacity);
-				this->_capacity = n;
+				_alloc.deallocate(old_v, _capacity);
+				_capacity = n;
 			}
 		// ELEMENT ACCESS:
 			// selon cplusplus.com :
@@ -362,6 +362,7 @@ namespace ft
 			iterator erase (iterator position)
 			{
 				unsigned int i = 0;
+				iterator tmp = position;
 				for (iterator it = begin(); it < position; it++, i++);
 				_alloc.destroy(_v + i);
 				while (position + 1 < end())
@@ -370,7 +371,7 @@ namespace ft
 					position++;
 				}
 				_size--;
-				return (position);
+				return (tmp);
 			}
 			iterator erase (iterator first, iterator last)
 			{
@@ -451,7 +452,7 @@ namespace ft
 			}
 			return (1);
 		}
-		return (1);
+		return (0);
 	}
 	
 	template <class T, class Alloc>
@@ -466,7 +467,7 @@ namespace ft
 			}
 			return (0);
 		}
-		return (0);
+		return (1);
 	}
 	
 	template <class T, class Alloc>

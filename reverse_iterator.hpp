@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 15:32:30 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/14 12:49:37 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/15 13:23:57 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,14 @@ namespace ft
 
 			reference operator*() const
 			{
-				iterator_type	tmp = this->_ptr;
+				iterator_type	tmp = _ptr;
 				tmp--;
 				return (*tmp);
 			}
 
 			pointer operator->() const
 			{
-				return (*_ptr);
+				return &(operator*());
 			}
 
 			reference operator[](size_t n)
@@ -98,13 +98,13 @@ namespace ft
 			{
 				reverse_random_access_iterator it = *this;
 				_ptr--;
-				return (*this);
+				return (it);
 			}
 			reverse_random_access_iterator operator--( int )
 			{
 				reverse_random_access_iterator it = *this;
 				_ptr++;
-				return (*this);
+				return (it);
 			}
 			reverse_random_access_iterator operator+( difference_type n ) const
 			{
@@ -114,6 +114,11 @@ namespace ft
 			reverse_random_access_iterator operator-( difference_type n ) const
 			{
 				return (reverse_random_access_iterator((base() + n)));
+			}
+
+			difference_type		operator- (reverse_random_access_iterator const & b)
+			{
+				return (b._ptr.base() - _ptr.base());
 			}
 
 			reverse_random_access_iterator& operator+=( difference_type n )
@@ -176,6 +181,12 @@ namespace ft
 	reverse_random_access_iterator<Iter> operator-( typename reverse_random_access_iterator<Iter>::difference_type n, const reverse_random_access_iterator<Iter>& it )
 	{
 		return (reverse_random_access_iterator<Iter>(it.base() + n));
+	}
+
+	template < class T >
+	size_t		operator-(reverse_random_access_iterator<T> const & a, reverse_random_access_iterator<T> const & b)
+	{
+		return (a.base() + b.base());
 	}
 };
 

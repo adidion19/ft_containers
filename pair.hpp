@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:20:48 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/15 15:22:31 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/18 14:47:19 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ namespace ft
 				second = p.second;
 				return ;
 			}
-			pair& operator=( const pair& other )
+			pair& operator=( const pair& ref )
 			{
 				first = ref.first;
 				second = ref.second;

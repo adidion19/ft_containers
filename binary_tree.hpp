@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/22 11:43:39 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/23 18:15:56 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,22 +77,28 @@ namespace ft
 			}
 	};
 
-	template < class Key, class T>
+	template < class Key, class T, class Alloc = std::allocator<Node<Key, T > > >
 	class	Binary_tree
 	{
 		private:
 			Node< Key, T> *root;
-			bool ll;
-			bool rr;
-			bool lr;
-			bool rl;
+			Alloc _alloc;
+			Node<Key, T> *ft_realloc(Node<Key, T> *tmp, Node<Key, T> *newroot)
+			{
+				if (tmp->left)
+					newroot->left = ft_realloc(tmp->left, newroot->left);
+				if (tmp->right)
+					newroot->right = ft_realloc(tmp->right, tmp->right);
+				_alloc.construct(*newroot, *tmp);
+			}
 			void ft_free(Node< Key, T> *node)
 			{
 				if (node)
 				{
 					ft_free(node->left);
 					ft_free(node->right);
-					delete node;
+					_alloc.destroy(node);
+					_alloc.deallocate(node, 1);
 				}
 			}
 			void	left_rotate(Node<Key, T> *x)
@@ -288,7 +294,8 @@ namespace ft
 							parent->right = NULL;
 						}
 					}
-					delete x;
+					_alloc.destroy(x);
+					_alloc.deallocate(x, 1);
 					return ;
 				}
 				if (!x->left || !x->right)
@@ -298,7 +305,8 @@ namespace ft
 						x->content = tmp->content;
 						x->left = NULL;
 						x->right = NULL;
-						delete tmp;
+						_alloc.destroy(tmp);
+						_alloc.deallocate(tmp, 1);
 					}
 					else
 					{
@@ -306,7 +314,8 @@ namespace ft
 							parent->left = tmp;
 						else
 							parent->right = tmp;
-						delete x;
+						_alloc.destroy(x);
+						_alloc.deallocate(x, 1);
 						tmp->root = parent;
 						if (boo)
 							fix_double_black(tmp);
@@ -322,11 +331,9 @@ namespace ft
 		public:
 			Binary_tree()
 			{
+				capacity = 0;
+				size = 0;
 				root = NULL;
-				ll = 0;
-				rr = 0;
-				lr = 0;
-				rl = 0;
 			}
 			~Binary_tree()
 			{
@@ -336,11 +343,13 @@ namespace ft
 			{
 				if (!search(data))
 				{
-					Node<Key, T> *newone = new Node<Key, T>(data);
-					if (!root)
+					Node<Key, T> *newone= _alloc.allocate(1);
+					_alloc.construct(newone, data);
+					if (this->size == 0)
 					{
 						newone->isBlack = 1;
 						root = newone;
+						this->size++;
 					}
 					else
 					{
@@ -352,6 +361,7 @@ namespace ft
 							tmp->left = newone;
 						else
 							tmp->right = newone;
+						this->size++;
 						fix_double_red(newone);
 					}
 				}

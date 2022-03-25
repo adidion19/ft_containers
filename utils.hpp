@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:11:45 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/23 11:45:31 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/25 14:42:40 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ namespace ft
 	template<> struct is_integral<char16_t> : public true_type{};
 	template<> struct is_integral<char32_t> : public true_type{};
 	template<> struct is_integral<wchar_t> : public true_type{};
+
+	template< class T2 > struct remove_const{typedef T2 type; };	
+	template< class T2 > struct remove_const<const T2>{ typedef T2 type; };
 }
 
 #endif

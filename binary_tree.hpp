@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/23 18:15:56 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/25 14:45:55 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define BINARY_TREE_H
 
 # include "pair.hpp"
+# include "map_iterator.hpp"
 
 namespace ft
 {
@@ -83,6 +84,16 @@ namespace ft
 		private:
 			Node< Key, T> *root;
 			Alloc _alloc;
+			unsigned int ft_count(Node<Key, T> *root, unsigned int *i)
+			{
+				if (root->left)
+					ft_count(root->left, i);
+				if (root->right)
+					ft_count(root->right, i);
+				if (root)
+					(*i)++;
+				return (*i);
+			}
 			Node<Key, T> *ft_realloc(Node<Key, T> *tmp, Node<Key, T> *newroot)
 			{
 				if (tmp->left)
@@ -145,7 +156,7 @@ namespace ft
 					x->isBlack = 1;
 					return ;
 				}
-				Node<Key, int> *parent = x->root, *grandparent = parent->root, *uncle = x->uncle();
+				Node<Key, T> *parent = x->root, *grandparent = parent->root, *uncle = x->uncle();
 				if (parent->isBlack == 0)
 				{
 					if (uncle && uncle->isBlack == 0)
@@ -328,12 +339,42 @@ namespace ft
 				delete_node(tmp);
 			}
 
+			Node<Key, T> *ft_copy(Node<Key, T> *a, Node<Key, T> *r)
+			{
+				if (!a)
+					return (NULL);
+				Node<Key, T> *newone = _alloc.allocate(1);
+				_alloc.construct(newone, a->content);
+				r = newone;
+				r->left = ft_copy(a->left, r->left);
+				r->right = ft_copy(a->right, r->right);
+				return (newone);
+			}
+
 		public:
+			Node<Key, T> *getRoot() const
+			{
+				return (root);
+			}
+			Alloc	getAllocator() const
+			{
+				return (_alloc);
+			}
 			Binary_tree()
 			{
-				capacity = 0;
-				size = 0;
 				root = NULL;
+			}
+			Binary_tree( const Binary_tree &obj)
+			{
+				_alloc = obj.getAllocator();
+				root = ft_copy(obj.getRoot(), root);
+			}
+			Binary_tree<Key, T> operator=(const Binary_tree &obj)
+			{
+				ft_free(root);
+				_alloc = obj.getAllocator();
+				root = ft_copy(obj.getRoot(), root);
+				return (*this);
 			}
 			~Binary_tree()
 			{
@@ -341,15 +382,14 @@ namespace ft
 			}
 			void	insert(ft::pair<Key,T> data)
 			{
-				if (!search(data))
+				if (!search(data.first))
 				{
 					Node<Key, T> *newone= _alloc.allocate(1);
 					_alloc.construct(newone, data);
-					if (this->size == 0)
+					if (!root)
 					{
 						newone->isBlack = 1;
 						root = newone;
-						this->size++;
 					}
 					else
 					{
@@ -361,7 +401,6 @@ namespace ft
 							tmp->left = newone;
 						else
 							tmp->right = newone;
-						this->size++;
 						fix_double_red(newone);
 					}
 				}
@@ -389,34 +428,35 @@ namespace ft
 				}
 				return tmp;
 			}
-			Node<Key, T> *search(ft::pair<Key, T> n)
+			T search(const Key &n)
 			{
 				Node<Key, T> *tmp = root;
 				while (tmp)
 				{
-					if (n.first < tmp->content.first)
+					if (n < tmp->content.first)
 					{
 						if (!tmp->left)
-							return (NULL);
+							return (0);
 						tmp = tmp->left;
 					}
-					else if (n.first == tmp->content.first)
-						return (tmp);
+					else if (n == tmp->content.first)
+						return (tmp->content.second);
 					else
 					{
 						if (!tmp->right)
-							return (NULL);
+							return (0);
 						else
 							tmp = tmp->right;
 					}
 				}
-				return (NULL);
+				return (0);
 			}
-			void delete_one(ft::pair<Key, T> n)
+			void delete_one(const Key& n)
 			{
-				if (Node<Key, T> *x = search(n))
+				if (T x = search(n))
 				{
-					delete_node(x);
+					Node <Key, T> *y = search_utils(ft::make_pair(n, x));
+					delete_node(y);
 				}
 			}
 			void ft_print(Node< Key, T> *node)
@@ -437,6 +477,13 @@ namespace ft
 					std::cout << root->content.second << std::endl;
 				}
 			}
+			unsigned int size()
+			{
+				int i = 0;
+				ft_count(root, &i);
+				return (i);
+			}
+			typedef map_iterator<ft::pair<Key, T> >	iterator;
 	};
 };
 

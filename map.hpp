@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:01:20 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/22 12:15:43 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/25 14:29:00 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <iterator>
 #include <exception>
 # include "pair.hpp"
+# include "binary_tree.hpp"
 
 namespace ft
 {
@@ -33,21 +34,42 @@ namespace ft
 			typedef Alloc allocator_type;
 			typedef typename allocator_type::reference		reference;
 			typedef typename allocator_type::const_reference	const_reference;
+			typedef typename Binary_tree<Key, T>::iterator				iterator;
 			typedef typename Alloc::pointer					pointer;
 			typedef typename Alloc::const_pointer			const_pointer;
 			typedef std::ptrdiff_t	difference_type;
 			typedef std::size_t size_type;
+		private:
+			Binary_tree<Key, T> _rb;
+			const key_compare &_cmp;
+			const allocator_type& _alloc;
+		public:
 		// CONSTRUCTEURS
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _cmp(comp), _alloc(alloc)
+			{
+				return ;
+			}
 			//template <class InputIterator>
 			//map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
-			map (const map& x);
+			map (const map& x): _cmp(x._cmp), _alloc(x._alloc)
+			{
+				_rb = x._rb;
+			}
 		// DESTRUCTEUR
-			~map();
+			~map()
+			{
+				return ;
+			}
 		// OPERATEUR =
-			map& operator= (const map& x);
+			map& operator= (const map& x)
+			{
+				_rb = x.rb;
+				_cmp = x.cmp;
+				_alloc = x._alloc;
+				return (*this);
+			}
 		// ITERATEURS
-			//iterator begin();
+			iterator begin();
 			//const_iterator begin() const;
 			//iterator end();
 			//const_iterator end() const;
@@ -56,23 +78,68 @@ namespace ft
 			//reverse_iterator rend();
 			//const_reverse_iterator rend() const;
 		//CAPACITY
-			bool empty() const;
-			size_type size() const;
-			size_type max_size() const;
+			bool empty() const
+			{
+				if (!_rb.size())
+					return (1);
+				return (0);
+			}
+			size_type size() const
+			{
+				return (_rb.size());
+			}
+			size_type max_size() const
+			{
+				return (_alloc.max_size());
+			}
 		//ELEMENT ACCESS
-			mapped_type& operator[] (const key_type& k);
+			mapped_type& operator[] (const key_type& k)
+			{
+				T s = _rb.search(k);
+				if (!s)
+					return (_rb.insert(ft::make_pair(k, T())).first->second);
+				return (s);
+			}
+			T& at( const Key& key )
+			{
+				T s = _rb.search(key);
+				if (!s)
+					throw(std::out_of_range("map"));
+				return (s);
+			}
+			const T& at( const Key& key ) const
+			{
+				T s = _rb.search(key);
+				if (!s)
+					throw(std::out_of_range("map"));
+				return (s);
+			}
 		// MODIFIERS
 			//pair<iterator,bool> insert (const value_type& val);
 			//iterator insert (iterator position, const value_type& val);
 			//template <class InputIterator>
 			//void insert (InputIterator first, InputIterator last);
 			//void erase (iterator position);
-			size_type erase (const key_type& k);
+			size_type erase (const key_type& k)
+			{
+				_rb.delete_one(k);
+			}
 			//void erase (iterator first, iterator last);
-			void swap (map& x);
-			void clear();
+			void swap (map& x)
+			{
+				map a = x;
+				x = *this;
+				*this = a;
+			}
+			void clear()
+			{
+				_rb.ft_free(_rb.root);
+			}
 		// OBSERVERS
-			key_compare key_comp() const;
+			key_compare key_comp() const
+			{
+				return (_cmp);
+			}
 			//value_compare value_comp() const;
 		// OPERATIONS
 			//iterator find (const key_type& k);
@@ -85,7 +152,10 @@ namespace ft
 			//pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			//pair<iterator,iterator> equal_range (const key_type& k);
 		// ALLOCATOR
-			allocator_type get_allocator() const;
+			allocator_type get_allocator() const
+			{
+				return (_alloc);
+			}
 	};
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs );

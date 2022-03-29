@@ -6,12 +6,12 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/25 14:45:55 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/28 16:54:17 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BINARY_TREE_H
-# define BINARY_TREE_H
+#ifndef BINARY_TREE_HPP
+# define BINARY_TREE_HPP
 
 # include "pair.hpp"
 # include "map_iterator.hpp"
@@ -33,6 +33,14 @@ namespace ft
 				isBlack = 0;
 				left = right = root = NULL;
 				return ;
+			}
+			Node &operator=( const Node &obj )
+			{
+				content = obj.content;
+				isBlack = obj.isBlack;
+				left = obj.left;
+				right = obj.right;
+				root = obj.root;
 			}
 			~Node()
 			{
@@ -84,7 +92,7 @@ namespace ft
 		private:
 			Node< Key, T> *root;
 			Alloc _alloc;
-			unsigned int ft_count(Node<Key, T> *root, unsigned int *i)
+			unsigned int ft_count(Node<Key, T> *root, unsigned int *i) const
 			{
 				if (root->left)
 					ft_count(root->left, i);
@@ -477,9 +485,9 @@ namespace ft
 					std::cout << root->content.second << std::endl;
 				}
 			}
-			unsigned int size()
+			unsigned int size() const
 			{
-				int i = 0;
+				unsigned int i = 0;
 				ft_count(root, &i);
 				return (i);
 			}

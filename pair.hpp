@@ -6,12 +6,12 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:20:48 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/18 14:47:19 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/28 17:11:23 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PAIR_H
-# define PAIR_H
+#ifndef PAIR_HPP
+# define PAIR_HPP
 
 #include <iostream>
 #include <memory>
@@ -22,7 +22,7 @@ namespace ft
 {
 	template < class T1, class T2 >
 	struct pair
-	{ // 1 2 4
+	{
 		public:
 			typedef T1 first_type;
 			typedef T2 second_type;

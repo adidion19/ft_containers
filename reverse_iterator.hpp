@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 15:32:30 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/15 13:23:57 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/28 14:32:24 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #define REVERSE_ITERATOR_H
 
 #include "iterator.hpp"
-#include "vector.hpp"
 
 namespace ft
 {

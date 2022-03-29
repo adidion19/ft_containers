@@ -6,12 +6,12 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:11:45 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/25 14:42:40 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/28 11:58:18 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
 #include <type_traits>
 
@@ -46,8 +46,6 @@ namespace ft
 	template<> struct is_integral<char32_t> : public true_type{};
 	template<> struct is_integral<wchar_t> : public true_type{};
 
-	template< class T2 > struct remove_const{typedef T2 type; };	
-	template< class T2 > struct remove_const<const T2>{ typedef T2 type; };
 }
 
 #endif

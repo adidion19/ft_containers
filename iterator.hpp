@@ -6,23 +6,23 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:14:46 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/15 11:02:37 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/28 14:26:34 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ITERATOR_H
-#define ITERATOR_H
+#ifndef ITERATOR_HPP
+#define ITERATOR_HPP
 
 #include <cstddef>
 #include <iostream>
 #include <memory>
 #include <type_traits>
-#include "vector.hpp"
+//#include "vector.hpp"
 
 namespace ft
 {
-	template< class T > struct remove_const	{ typedef T type; };
-	template< class T > struct remove_const<const T>	{ typedef T type; };
+	template< class T2 > struct remove_const{typedef T2 type; };	
+	template< class T2 > struct remove_const<const T2>{ typedef T2 type; };
 
 	template<class Category, class T, class Distance = std::ptrdiff_t, class Pointer = T*, class Reference = T&>
 	struct iterator

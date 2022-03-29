@@ -6,18 +6,16 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:07:31 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/15 13:19:17 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/28 12:11:11 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef VECTOR_H
-# define VECTOR_H
+#ifndef VECTOR_HPP
+# define VECTOR_HPP
 
 #include <iostream>
 #include <memory>
-#include <iterator>
 #include <exception>
-#include "iterator.hpp"
 #include "utils.hpp"
 #include "reverse_iterator.hpp"
 

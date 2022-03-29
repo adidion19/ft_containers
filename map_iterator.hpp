@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 17:04:12 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/29 13:51:57 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/29 16:46:58 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ namespace ft
 	{
 		private:
 			typedef Node<typename remove_const<typename T::first_type>::type, typename T::second_type> nodes;
-			Node<typename T::first_type, typename T::second_type> *a;
+			//Node<typename T::first_type, typename T::second_type> *a;
 			nodes	*_node;
 		public:
 			typedef	typename T::first_type	key;
 			typedef	typename T::second_type	value;
-			map_iterator(): a(NULL), _node(NULL)
+			map_iterator(): /*a(NULL),*/ _node(NULL)
 			{
 				return ;
 			}
@@ -59,10 +59,9 @@ namespace ft
 				nodes tmp = _node;
 				return (tmp->content);
 			}
-			T operator->()
+			T* operator->() const
 			{
-				a = _node;
-				return (a->content);
+				return (&(_node)->content);
 			}
 			map_iterator &	operator++()
 			{
@@ -93,7 +92,7 @@ namespace ft
 			}
 			map_iterator& operator--()
 			{
-				if (!_node->is_black && _node->parent->parent == _node)
+				if (!_node->isBlack && _node->root->root == _node)
 					_node = _node->right;
 				else if (_node->left != 0)
 				{
@@ -104,11 +103,11 @@ namespace ft
 				}
 				else
 				{
-					nodes* y = _node->parent;
+					nodes* y = _node->root;
 					while (_node == y->left)
 					{
 						_node = y;
-						y = y->parent;
+						y = y->root;
 					}
 					_node = y;
 				}
@@ -120,8 +119,14 @@ namespace ft
 				_node--;
 				return (tmp);
 			}
-			bool	operator==(const map_iterator &obj) const;
-			bool	operator!=(const map_iterator &obj) const;
+			bool	operator==(const map_iterator &obj) const
+			{
+				return (_node == obj._node);
+			}
+			bool	operator!=(const map_iterator &obj) const
+			{
+				return (!(*this == obj));
+			}
 			nodes* getNode() const
 			{
 				return (_node);

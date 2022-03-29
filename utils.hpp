@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:11:45 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/28 11:58:18 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/29 15:05:04 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,18 @@ namespace ft
 	template<> struct is_integral<char32_t> : public true_type{};
 	template<> struct is_integral<wchar_t> : public true_type{};
 
+	template<class InputIt1, class InputIt2>
+	bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
+	{
+		for (; first1 != last1; ++first1, ++first2)
+		{
+			if (!(*first1 == *first2))
+			{
+				return 0;
+			}
+		}
+		return 1;
+	}
 }
 
 #endif

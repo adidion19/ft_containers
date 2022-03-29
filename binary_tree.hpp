@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/28 16:54:17 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/29 16:45:51 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ namespace ft
 	class	Node
 	{
 		public:
-			ft::pair<Key,T> content;
+			ft::pair<const Key,T> content;
 			bool isBlack;
 			Node *left;
 			Node *right;
@@ -109,16 +109,6 @@ namespace ft
 				if (tmp->right)
 					newroot->right = ft_realloc(tmp->right, tmp->right);
 				_alloc.construct(*newroot, *tmp);
-			}
-			void ft_free(Node< Key, T> *node)
-			{
-				if (node)
-				{
-					ft_free(node->left);
-					ft_free(node->right);
-					_alloc.destroy(node);
-					_alloc.deallocate(node, 1);
-				}
 			}
 			void	left_rotate(Node<Key, T> *x)
 			{
@@ -360,6 +350,16 @@ namespace ft
 			}
 
 		public:
+			void ft_free(Node< Key, T> *node)
+			{
+				if (node)
+				{
+					ft_free(node->left);
+					ft_free(node->right);
+					_alloc.destroy(node);
+					_alloc.deallocate(node, 1);
+				}
+			}
 			Node<Key, T> *getRoot() const
 			{
 				return (root);

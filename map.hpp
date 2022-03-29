@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:01:20 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/29 13:49:40 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/29 15:42:17 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ namespace ft
 			typedef std::size_t size_type;
 		private:
 			Binary_tree<Key, T> _rb;
-			const key_compare &_cmp;
-			const allocator_type& _alloc;
+			key_compare _cmp;
+			allocator_type _alloc;
 		public:
 		// CONSTRUCTEURS
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _cmp(comp), _alloc(alloc)
@@ -68,9 +68,9 @@ namespace ft
 		// OPERATEUR =
 			map& operator= (const map& x)
 			{
-				_rb = x.rb;
-				_cmp = x.cmp;
-				_alloc = x._alloc;
+				_rb = x._rb;
+				_cmp = x.key_comp();
+				_alloc = x.get_allocator();
 				return (*this);
 			}
 		// ITERATEURS
@@ -138,7 +138,7 @@ namespace ft
 			}
 			void clear()
 			{
-				_rb.ft_free(_rb.root);
+				_rb.ft_free(_rb.getRoot());
 			}
 		// OBSERVERS
 			key_compare key_comp() const

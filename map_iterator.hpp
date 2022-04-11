@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 17:04:12 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/29 16:46:58 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/11 13:46:39 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,19 @@ namespace ft
 {
 	template <class Key, class T>
 	class Node;
-	
+	template < class Key, class T, class Alloc>
+	class Binary_tree;
+
 	template <class T>
 	class map_iterator
 	{
 		private:
 			typedef Node<typename remove_const<typename T::first_type>::type, typename T::second_type> nodes;
-			//Node<typename T::first_type, typename T::second_type> *a;
 			nodes	*_node;
 		public:
 			typedef	typename T::first_type	key;
 			typedef	typename T::second_type	value;
-			map_iterator(): /*a(NULL),*/ _node(NULL)
+			map_iterator(): _node(NULL)
 			{
 				return ;
 			}
@@ -44,6 +45,14 @@ namespace ft
 			map_iterator(nodes *n): _node(n)
 			{
 				return ;
+			}
+			//map_iterator (Node<typename remove_const<typename T::first_type>::type, typename T::second_type>): _node(a)
+			//{
+			//	;
+			//}
+			map_iterator (Node<typename T::first_type, typename T::second_type> *a): _node(a)
+			{
+				;
 			}
 			~map_iterator()
 			{
@@ -56,8 +65,11 @@ namespace ft
 			}
 			T& operator*() const
 			{
-				nodes tmp = _node;
-				return (tmp->content);
+				return (_node->content);
+			}
+			nodes *base() const
+			{
+				return (_node);
 			}
 			T* operator->() const
 			{
@@ -74,7 +86,7 @@ namespace ft
 				else
 				{
 					nodes* y = _node->root;
-					while (_node == y->right)
+					while (_node && y && y->right && _node == y->right)
 					{
 						_node = y;
 						y = y->root;
@@ -87,13 +99,18 @@ namespace ft
 			map_iterator& operator++(int)
 			{
 				nodes *tmp = _node;
-				_node++;
+				++_node;
 				return (tmp);
 			}
 			map_iterator& operator--()
 			{
+				if (!_node)
+				{
+				;//return (map_iterator)
+				}
 				if (!_node->isBlack && _node->root->root == _node)
 					_node = _node->right;
+				//std::cout << "AAAA" << std::endl;
 				else if (_node->left != 0)
 				{
 					nodes* y = _node->left;

@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:01:20 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/29 15:42:17 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/03 17:54:39 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,11 @@
 # include "pair.hpp"
 # include "binary_tree.hpp"
 #include "reverse_iterator.hpp"
+#include "map_iterator.hpp"
 
 namespace ft
 {
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
 	class map
 	{
 		public:
@@ -54,8 +55,17 @@ namespace ft
 			{
 				return ;
 			}
-			//template <class InputIterator>
-			//map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
+			template <class InputIterator>
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+			: _cmp(comp), _alloc(alloc)
+			{
+				while (first != last)
+				{
+					_rb.insert(ft::make_pair(first->first, first->second));
+					++first;
+				}
+				//_rb.insert(ft::make_pair(first->first, first->second));
+			}
 			map (const map& x): _cmp(x._cmp), _alloc(x._alloc)
 			{
 				_rb = x._rb;
@@ -74,10 +84,22 @@ namespace ft
 				return (*this);
 			}
 		// ITERATEURS
-			//iterator begin();
-			//const_iterator begin() const;
-			//iterator end();
-			//const_iterator end() const;
+			iterator begin()
+			{
+				return (iterator(_rb.begin()));
+			}
+			const_iterator begin() const
+			{
+				return (const_iterator(_rb.begin()));
+			}
+			iterator end()
+			{
+				return (iterator(_rb.end()));
+			}
+			const_iterator end() const
+			{
+				return (const_iterator(_rb.end()));
+			}
 			//reverse_iterator rbegin();
 			//const_reverse_iterator rbegin() const;
 			//reverse_iterator rend();

@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/29 16:45:51 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/11 14:08:50 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,31 @@ namespace ft
 			Node *left;
 			Node *right;
 			Node *root;
-			Node(ft::pair<Key,T> data)
+			//Node <Key, T> ptr;
+			Node(ft::pair< const Key,T> data): content(data)
 			{
-				content = data;
 				isBlack = 0;
 				left = right = root = NULL;
 				return ;
 			}
+			Node(const Node &obj): content(obj.content), isBlack(obj.isBlack), left(obj.left), right(obj.right), root(obj.root)
+			{
+				return;
+			}
+			Node(const Node &obj, bool a): content(obj.content), isBlack(obj.isBlack), left(NULL), right(NULL), root(NULL)
+			{
+				(void)a;
+				return ;
+			}
 			Node &operator=( const Node &obj )
 			{
-				content = obj.content;
-				isBlack = obj.isBlack;
-				left = obj.left;
-				right = obj.right;
-				root = obj.root;
+				std::allocator<Node<const Key, T> >	alloc;
+				*this = alloc.allocate(1);
+				if (obj)
+					alloc.construct(*this, *(obj));
+				else
+					*this = NULL;
+				return (*this);
 			}
 			~Node()
 			{
@@ -86,23 +97,24 @@ namespace ft
 			}
 	};
 
-	template < class Key, class T, class Alloc = std::allocator<Node<Key, T > > >
+	template < class Key, class T, class Alloc = std::allocator<Node<const Key, T > > >
 	class	Binary_tree
 	{
 		private:
-			Node< Key, T> *root;
+			Node< const Key, T> *root;
 			Alloc _alloc;
-			unsigned int ft_count(Node<Key, T> *root, unsigned int *i) const
+			unsigned int ft_count(Node<const Key, T> *root, unsigned int *i) const
 			{
-				if (root->left)
+				//std::cout<<"A"<<std::endl;
+				if (root && root->left)
 					ft_count(root->left, i);
-				if (root->right)
+				if (root && root->right)
 					ft_count(root->right, i);
 				if (root)
 					(*i)++;
 				return (*i);
 			}
-			Node<Key, T> *ft_realloc(Node<Key, T> *tmp, Node<Key, T> *newroot)
+			Node<const Key, T> *ft_realloc(Node<const Key, T> *tmp, Node<const Key, T> *newroot)
 			{
 				if (tmp->left)
 					newroot->left = ft_realloc(tmp->left, newroot->left);
@@ -110,9 +122,9 @@ namespace ft
 					newroot->right = ft_realloc(tmp->right, tmp->right);
 				_alloc.construct(*newroot, *tmp);
 			}
-			void	left_rotate(Node<Key, T> *x)
+			void	left_rotate(Node<const Key, T> *x)
 			{
-				Node<Key, T> *tmp = x->right;
+				Node<const Key, T> *tmp = x->right;
 				if (x == root)
 					root = tmp;
 				x->move_down(tmp);
@@ -121,9 +133,9 @@ namespace ft
 					tmp->left->root = x;
 				tmp->left = x;
 			}
-			void	right_rotate(Node<Key, T> *x)
+			void	right_rotate(Node<const Key, T> *x)
 			{
-				Node<Key, T> *tmp = x->left;
+				Node<const Key, T> *tmp = x->left;
 				if (x == root)
 					root = tmp;
 				x->move_down(tmp);
@@ -133,28 +145,28 @@ namespace ft
 				tmp->right = x;
 			}
 
-			void	swap_isBlack(Node<Key, T> *x1, Node<Key, T> *x2)
+			void	swap_isBlack(Node<const Key, T> *x1, Node<const Key, T> *x2)
 			{
 				bool tmp;
 				tmp = x1->isBlack;
 				x1->isBlack = x2->isBlack;
 				x2->isBlack = tmp;
 			}
-			void swap_values(Node<Key, T> *x1, Node<Key, T> *x2)
+			void swap_values(Node<const Key, T> *x1, Node<const Key, T> *x2)
 			{
-				ft::pair<Key, T> a;
+				ft::pair<const Key, T> a;
 				a = x1->content;
 				x1->content = x2->content;
 				x2->content = a;
 			}
-			void fix_double_red(Node<Key, T> *x)
+			void fix_double_red(Node<const Key, T> *x)
 			{
 				if (x == root)
 				{
 					x->isBlack = 1;
 					return ;
 				}
-				Node<Key, T> *parent = x->root, *grandparent = parent->root, *uncle = x->uncle();
+				Node<const Key, T> *parent = x->root, *grandparent = parent->root, *uncle = x->uncle();
 				if (parent->isBlack == 0)
 				{
 					if (uncle && uncle->isBlack == 0)
@@ -191,11 +203,11 @@ namespace ft
 					}
 				}
 			}
-			void	fix_double_black(Node<Key, T> *x)
+			void	fix_double_black(Node<const Key, T> *x)
 			{
 				if (x == root)
 					return ;
-				Node<Key, T> *sibling = x->sibling(), *parent = x->root;
+				Node<const Key, T> *sibling = x->sibling(), *parent = x->root;
 				if (!sibling)
 					fix_double_black(parent);
 				else
@@ -257,14 +269,14 @@ namespace ft
 					}
 				}
 			}
-			Node<Key, T> *successor(Node<Key, T> *x)
+			Node<const Key, T> *successor(Node<const Key, T> *x)
 			{
-				Node<Key, T> *tmp = x;
+				Node<const Key, T> *tmp = x;
 				while (tmp->left)
 					tmp = tmp->left;
 				return (tmp);
 			}
-			Node<Key, T> *replace(Node <Key, T> *x)
+			Node<const Key, T> *replace(Node <const Key, T> *x)
 			{
 				if (x->left && x->right)
 					return (successor(x->right));
@@ -274,11 +286,11 @@ namespace ft
 					return (x->left);
 				return (x->right);
 			}
-			void	delete_node(Node <Key, T> *x)
+			void	delete_node(Node <const Key, T> *x)
 			{
 				Node<Key, T> *tmp = replace(x);
 				bool boo = ((!tmp || tmp->isBlack == 1) && (x->isBlack == 1));
-				Node<Key, T> *parent = x->root;
+				Node<const Key, T> *parent = x->root;
 				if (!tmp)
 				{
 					if (x == root)
@@ -337,20 +349,22 @@ namespace ft
 				delete_node(tmp);
 			}
 
-			Node<Key, T> *ft_copy(Node<Key, T> *a, Node<Key, T> *r)
+			Node<const Key, T> *ft_copy(Node<const Key, T> *a, Node<const Key, T> *r)
 			{
 				if (!a)
 					return (NULL);
-				Node<Key, T> *newone = _alloc.allocate(1);
-				_alloc.construct(newone, a->content);
-				r = newone;
-				r->left = ft_copy(a->left, r->left);
-				r->right = ft_copy(a->right, r->right);
+				Node<const Key, T> *newone = _alloc.allocate(1);
+				_alloc.construct(newone, *a);
+				if (a->left)
+					newone->left = ft_copy(a->left, newone);
+				if (a->right)
+					newone->right = ft_copy(a->right, newone);
+				newone->root = r;
 				return (newone);
 			}
 
 		public:
-			void ft_free(Node< Key, T> *node)
+			void ft_free(Node< const Key, T> *node)
 			{
 				if (node)
 				{
@@ -360,9 +374,18 @@ namespace ft
 					_alloc.deallocate(node, 1);
 				}
 			}
-			Node<Key, T> *getRoot() const
+			void ft_free(Node< const Key, T> node)
+			{
+				_alloc.destroy(node);
+				_alloc.deallocate(node, 1);
+			}
+			Node<const Key, T> *getRoot() const
 			{
 				return (root);
+			}
+			Node<Key, T> *getRoot_2() const
+			{
+				return (reinterpret_cast<Node<Key, T> *>(root));
 			}
 			Alloc	getAllocator() const
 			{
@@ -375,24 +398,24 @@ namespace ft
 			Binary_tree( const Binary_tree &obj)
 			{
 				_alloc = obj.getAllocator();
-				root = ft_copy(obj.getRoot(), root);
+				root = ft_copy(obj.getRoot(), NULL);
 			}
 			Binary_tree<Key, T> operator=(const Binary_tree &obj)
 			{
 				ft_free(root);
 				_alloc = obj.getAllocator();
-				root = ft_copy(obj.getRoot(), root);
+				this->root = ft_copy(obj.getRoot(), NULL);
 				return (*this);
 			}
 			~Binary_tree()
 			{
 				ft_free(root);
 			}
-			void	insert(ft::pair<Key,T> data)
+			void	insert(ft::pair<const Key,T> data)
 			{
 				if (!search(data.first))
 				{
-					Node<Key, T> *newone= _alloc.allocate(1);
+					Node<const Key, T> *newone= _alloc.allocate(1);
 					_alloc.construct(newone, data);
 					if (!root)
 					{
@@ -401,7 +424,7 @@ namespace ft
 					}
 					else
 					{
-						Node<Key, T> *tmp = search_utils(data);
+						Node<const Key, T> *tmp = search_utils(data);
 						if (tmp->content == data)
 							return ;
 						newone->root = tmp;
@@ -413,9 +436,9 @@ namespace ft
 					}
 				}
 			}
-			Node<Key, T> *search_utils(ft::pair<Key, T> n)
+			Node<const Key, T> *search_utils(ft::pair<const Key, T> n)
 			{
-				Node<Key, T> *tmp = root;
+				Node<const Key, T> *tmp = root;
 				while (tmp)
 				{
 					if (n.first < tmp->content.first)
@@ -438,7 +461,7 @@ namespace ft
 			}
 			T search(const Key &n)
 			{
-				Node<Key, T> *tmp = root;
+				Node<const Key, T> *tmp = root;
 				while (tmp)
 				{
 					if (n < tmp->content.first)
@@ -463,11 +486,11 @@ namespace ft
 			{
 				if (T x = search(n))
 				{
-					Node <Key, T> *y = search_utils(ft::make_pair(n, x));
+					Node <const Key, T> *y = search_utils(ft::make_pair(n, x));
 					delete_node(y);
 				}
 			}
-			void ft_print(Node< Key, T> *node)
+			void ft_print(Node< const Key, T> *node)
 			{
 				if (node)
 				{
@@ -482,7 +505,7 @@ namespace ft
 				{
 					ft_print(root->left);
 					ft_print(root->right);
-					std::cout << root->content.second << std::endl;
+					std::cout << "root : " << root->content.second << std::endl;
 				}
 			}
 			unsigned int size() const
@@ -491,7 +514,43 @@ namespace ft
 				ft_count(root, &i);
 				return (i);
 			}
-			typedef map_iterator<ft::pair<Key, T> >	iterator;
+			typedef map_iterator<pair<Key, T> >	iterator;
+			typedef map_iterator< const pair<const Key, T> >	const_iterator;
+			Node<Key, T> *begin()
+			{
+				Node<Key, T>* tmp = getRoot_2();
+				while (tmp->left)
+					tmp = tmp->left;
+				return (tmp);
+			}
+			Node<Key, T> *begin() const
+			{
+				Node<Key, T>* tmp = getRoot_2();
+				while (tmp->left)
+					tmp = tmp->left;
+				return (tmp);
+			}
+			Node<Key, T> *end()
+			{
+				Node<Key, T>* tmp = getRoot_2();
+				while (tmp->right)
+					tmp = tmp->right;
+				return (tmp->right);
+			}
+			Node<Key, T> *end_but_less()
+			{
+				Node<Key, T>* tmp = getRoot_2();
+				while (tmp->right)
+					tmp = tmp->right;
+				return (tmp);
+			}
+			Node<Key, T> *end() const
+			{
+				Node<Key, T>* tmp = getRoot_2();
+				while (tmp->right)
+					tmp = tmp->right;
+				return (tmp->right);
+			}
 	};
 };
 

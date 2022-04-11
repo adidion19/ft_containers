@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:20:48 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/29 15:54:54 by adidion          ###   ########.fr       */
+/*   Updated: 2022/03/31 13:51:18 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <memory>
 #include <iterator>
 #include <exception>
+#include "iterator.hpp"
 
 namespace ft
 {
@@ -37,17 +38,13 @@ namespace ft
 				return ;
 			}
 			template< class U1, class U2 >
-			pair( const pair<U1, U2>& p )
+			pair( const pair& p ): first(p.first), second(p.second)
 			{
-				first = p.first;
-				second = p.second;
 				return ;
 			}
-			pair& operator=( const pair& ref )
+			pair& operator=( pair& ref )
 			{
-				first = ref.first;
-				second = ref.second;
-				return (*this);
+				return (ref);
 			}
 	};
 
@@ -88,9 +85,9 @@ namespace ft
 	}
 
 	template <class T1, class T2>
-	pair<T1,T2> make_pair (T1 x, T2 y)
+	pair<const T1,T2> make_pair (T1 x, T2 y)
 	{
-		return (pair<T1, T2>(x, y));
+		return (pair<const T1, T2>(x, y));
 	}
 }
 

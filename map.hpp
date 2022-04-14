@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:01:20 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/03 17:54:39 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/14 13:25:38 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include <exception>
 #include "iterator.hpp"
 # include "pair.hpp"
-# include "binary_tree.hpp"
+# include "binary_tree2.hpp"
 #include "reverse_iterator.hpp"
-#include "map_iterator.hpp"
+#include "map_iterator2.hpp"
 
 namespace ft
 {
@@ -29,42 +29,56 @@ namespace ft
 	class map
 	{
 		public:
-			typedef Key key_type;
-			typedef T mapped_type;
-			typedef ft::pair<const key_type, mapped_type> value_type;
-			typedef Compare key_compare;
-			//typedef 
-			typedef Alloc allocator_type;
-			typedef typename allocator_type::reference		reference;
-			typedef typename allocator_type::const_reference	const_reference;
-			typedef typename ft::map_iterator<pair<const Key, T> >	iterator;
-			typedef	ft::map_iterator<const pair<const Key, T> >	const_iterator;
-			typedef	ft::reverse_random_access_iterator<iterator> 				reverse_iterator;
-			typedef	ft::reverse_random_access_iterator<const_iterator>		const_reverse_iterator;
-			typedef typename Alloc::pointer	pointer;
-			typedef typename Alloc::const_pointer	const_pointer;
-			typedef std::ptrdiff_t	difference_type;
-			typedef std::size_t size_type;
+			typedef Key																key_type;
+			typedef T																mapped_type;
+			typedef ft::pair<const key_type,mapped_type>							value_type;
+			typedef Compare															key_compare;
+			typedef std::allocator<ft::pair<const Key,T> >							allocator_type;
+			typedef value_type&														reference;
+			typedef const value_type&												const_reference;
+			typedef value_type*														pointer;
+			typedef const value_type*												const_pointer;
+			typedef int																difference_type;
+			typedef size_t															size_type;
+			typedef ft::Node<const Key, T>											node;
+			typedef typename ft::map_iterator<value_type, node>						iterator;
+			typedef	ft::map_iterator<const value_type, node>						const_iterator;
+			typedef	ft::reverse_random_access_iterator<iterator> 					reverse_iterator;
+			typedef	ft::reverse_random_access_iterator<const_iterator>				const_reverse_iterator;
+			typedef ft::Binary_tree<key_type, mapped_type, key_compare, allocator_type>	Binary_tree;
 		private:
-			Binary_tree<Key, T> _rb;
+			class value_compare
+			{
+				protected:
+					Compare comp;
+				public:
+					value_compare (Compare c) : comp(c)
+					{
+						return ;
+					}
+					bool operator() (const value_type& x, const value_type& y) const
+					{
+						return comp(x.first, y.first);
+					}
+			};
+			Binary_tree _rb;
 			key_compare _cmp;
 			allocator_type _alloc;
 		public:
 		// CONSTRUCTEURS
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _cmp(comp), _alloc(alloc)
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _rb(Binary_tree()), _cmp(comp), _alloc(alloc)
 			{
 				return ;
 			}
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
-			: _cmp(comp), _alloc(alloc)
+			: _rb(Binary_tree()), _cmp(comp), _alloc(alloc)
 			{
 				while (first != last)
 				{
 					_rb.insert(ft::make_pair(first->first, first->second));
 					++first;
 				}
-				//_rb.insert(ft::make_pair(first->first, first->second));
 			}
 			map (const map& x): _cmp(x._cmp), _alloc(x._alloc)
 			{
@@ -100,10 +114,22 @@ namespace ft
 			{
 				return (const_iterator(_rb.end()));
 			}
-			//reverse_iterator rbegin();
-			//const_reverse_iterator rbegin() const;
-			//reverse_iterator rend();
-			//const_reverse_iterator rend() const;
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(_rb.begin()));
+			}
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(_rb.begin()));
+			}
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(_rb.end()));
+			}
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(_rb.end()));
+			}
 		//CAPACITY
 			bool empty() const
 			{
@@ -122,10 +148,7 @@ namespace ft
 		//ELEMENT ACCESS
 			mapped_type& operator[] (const key_type& k)
 			{
-				T s = _rb.search(k);
-				if (!s)
-					return (_rb.insert(ft::make_pair(k, T())).first->second);
-				return (s);
+				return (*((insert(ft::make_pair(k,mapped_type()))).first)).second;
 			}
 			T& at( const Key& key )
 			{
@@ -142,10 +165,25 @@ namespace ft
 				return (s);
 			}
 		// MODIFIERS
-			//pair<iterator,bool> insert (const value_type& val);
-			//iterator insert (iterator position, const value_type& val);
-			//template <class InputIterator>
-			//void insert (InputIterator first, InputIterator last);
+			pair<iterator,bool> insert (const value_type& val)
+			{
+				return (_rb.insert(val));
+			}
+			iterator insert (iterator position, const value_type& val)
+			{
+				ft::pair<iterator,bool> tmp = _rb.insert(val);
+				(void)position;
+				return (tmp.first);
+			}
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last)
+			{
+				while (first != last)
+				{
+					_rb.insert(ft::make_pair(first->first, first->second));
+					++first;
+				}
+			}
 			//void erase (iterator position);
 			size_type erase (const key_type& k)
 			{
@@ -160,14 +198,17 @@ namespace ft
 			}
 			void clear()
 			{
-				_rb.ft_free(_rb.getRoot());
+				_rb.ft_free(begin(), end());
 			}
 		// OBSERVERS
 			key_compare key_comp() const
 			{
 				return (_cmp);
 			}
-			//value_compare value_comp() const;
+			value_compare value_comp() const
+			{
+				return (value_compare(_cmp));
+			}
 		// OPERATIONS
 			//iterator find (const key_type& k);
 			//const_iterator find (const key_type& k) const;

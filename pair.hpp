@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:20:48 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/31 13:51:18 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/14 12:54:24 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,15 @@ namespace ft
 				return ;
 			}
 			template< class U1, class U2 >
-			pair( const pair& p ): first(p.first), second(p.second)
+			pair( const pair<U1, U2>& p ): first(p.first), second(p.second)
 			{
 				return ;
 			}
-			pair& operator=( pair& ref )
+			pair& operator=( const pair& ref )
 			{
-				return (ref);
+				first = ref.first;
+				second = ref.second;
+				return (*this);
 			}
 	};
 

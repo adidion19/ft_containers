@@ -1,4 +1,4 @@
-#include "binary_tree.hpp"
+#include "binary_tree2.hpp"
 #include <map>
 #include "map.hpp"
 //#include "pair.hpp"
@@ -33,6 +33,7 @@ int main()
 	c = a;
 	a.delete_one('a');
 	a.delete_one('b');
+	//std::cout << """AAaAA"""<< std::endl;
 	std::cout << std::endl;
 	a.ft_print();
 	c.delete_one('a');
@@ -42,6 +43,5 @@ int main()
 	c.delete_one('e');
 	std::cout << std::endl;
 	c.ft_print();
-	std::cout << std::endl;
 	b.ft_print();
 }

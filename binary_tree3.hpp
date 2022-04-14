@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/11 14:08:50 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/11 16:15:09 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,22 +103,23 @@ namespace ft
 		private:
 			Node< const Key, T> *root;
 			Alloc _alloc;
+			Node< const Key, T> *					_null;
 			unsigned int ft_count(Node<const Key, T> *root, unsigned int *i) const
 			{
 				//std::cout<<"A"<<std::endl;
-				if (root && root->left)
+				if (root != _null && root->left != _null)
 					ft_count(root->left, i);
-				if (root && root->right)
+				if (root != _null && root->right != _null)
 					ft_count(root->right, i);
-				if (root)
+				if (root != _null)
 					(*i)++;
 				return (*i);
 			}
 			Node<const Key, T> *ft_realloc(Node<const Key, T> *tmp, Node<const Key, T> *newroot)
 			{
-				if (tmp->left)
+				if (tmp->left != _null)
 					newroot->left = ft_realloc(tmp->left, newroot->left);
-				if (tmp->right)
+				if (tmp->right != _null)
 					newroot->right = ft_realloc(tmp->right, tmp->right);
 				_alloc.construct(*newroot, *tmp);
 			}
@@ -129,7 +130,7 @@ namespace ft
 					root = tmp;
 				x->move_down(tmp);
 				x->right = tmp->left;
-				if (tmp->left)
+				if (tmp->left != _null)
 					tmp->left->root = x;
 				tmp->left = x;
 			}
@@ -140,7 +141,7 @@ namespace ft
 					root = tmp;
 				x->move_down(tmp);
 				x->left = tmp->right;
-				if (tmp->right)
+				if (tmp->right != _null)
 					tmp->right->root = x;
 				tmp->right = x;
 			}
@@ -169,7 +170,7 @@ namespace ft
 				Node<const Key, T> *parent = x->root, *grandparent = parent->root, *uncle = x->uncle();
 				if (parent->isBlack == 0)
 				{
-					if (uncle && uncle->isBlack == 0)
+					if (uncle != _null && uncle->isBlack == 0)
 					{
 						parent->isBlack = 1;
 						uncle->isBlack = 1;
@@ -208,7 +209,7 @@ namespace ft
 				if (x == root)
 					return ;
 				Node<const Key, T> *sibling = x->sibling(), *parent = x->root;
-				if (!sibling)
+				if (!sibling || sibling == _null)
 					fix_double_black(parent);
 				else
 				{
@@ -272,30 +273,30 @@ namespace ft
 			Node<const Key, T> *successor(Node<const Key, T> *x)
 			{
 				Node<const Key, T> *tmp = x;
-				while (tmp->left)
+				while (tmp->left != _null)
 					tmp = tmp->left;
 				return (tmp);
 			}
 			Node<const Key, T> *replace(Node <const Key, T> *x)
 			{
-				if (x->left && x->right)
+				if (x->left  != _null && x->right != _null )
 					return (successor(x->right));
-				if (!x->left && !x->right)
-					return (NULL);
-				if (x->left)
+				if (_null == x->left && _null == x->right)
+					return (_null);
+				if (x->left != _null )
 					return (x->left);
 				return (x->right);
 			}
 			void	delete_node(Node <const Key, T> *x)
 			{
 				Node<Key, T> *tmp = replace(x);
-				bool boo = ((!tmp || tmp->isBlack == 1) && (x->isBlack == 1));
+				bool boo = ((_null == tmp || tmp->isBlack == 1) && (x->isBlack == 1));
 				Node<const Key, T> *parent = x->root;
-				if (!tmp)
+				if (_null != tmp)
 				{
 					if (x == root)
 					{
-						root = NULL;
+						root = _null;
 					}
 					else
 					{
@@ -308,24 +309,24 @@ namespace ft
 						}
 						if (x->is_on_left())
 						{
-							parent->left = NULL;
+							parent->left = _null;
 						}
 						else
 						{
-							parent->right = NULL;
+							parent->right = _null;
 						}
 					}
 					_alloc.destroy(x);
 					_alloc.deallocate(x, 1);
 					return ;
 				}
-				if (!x->left || !x->right)
+				if (_null == x->left || _null == x->right)
 				{
 					if (x == root)
 					{
 						x->content = tmp->content;
-						x->left = NULL;
-						x->right = NULL;
+						x->left = _null;
+						x->right = _null;
 						_alloc.destroy(tmp);
 						_alloc.deallocate(tmp, 1);
 					}
@@ -351,13 +352,13 @@ namespace ft
 
 			Node<const Key, T> *ft_copy(Node<const Key, T> *a, Node<const Key, T> *r)
 			{
-				if (!a)
-					return (NULL);
+				if (!a || a == _null)
+					return (_null);
 				Node<const Key, T> *newone = _alloc.allocate(1);
 				_alloc.construct(newone, *a);
-				if (a->left)
+				if (a->left != _null)
 					newone->left = ft_copy(a->left, newone);
-				if (a->right)
+				if (a->right != _null)
 					newone->right = ft_copy(a->right, newone);
 				newone->root = r;
 				return (newone);
@@ -366,7 +367,7 @@ namespace ft
 		public:
 			void ft_free(Node< const Key, T> *node)
 			{
-				if (node)
+				if (node != _null)
 				{
 					ft_free(node->left);
 					ft_free(node->right);
@@ -391,9 +392,24 @@ namespace ft
 			{
 				return (_alloc);
 			}
+			Node<const Key, T> * new_node(ft::pair<const Key,T> i)
+			{
+				Node<const Key, T> *node = _alloc.allocate(1);
+				_alloc.construct(node, i);
+				node->left = _null;
+				node->right = _null;
+				node->root = NULL;
+				node->isBlack = 1;
+				return (node);
+			}
 			Binary_tree()
 			{
-				root = NULL;
+				_null = new_node(ft::pair<const Key, T>());
+				_null->left = NULL;
+				_null->right = NULL;
+				_null->isBlack = 1;
+				_null->root = NULL;
+				root = _null;
 			}
 			Binary_tree( const Binary_tree &obj)
 			{
@@ -415,9 +431,8 @@ namespace ft
 			{
 				if (!search(data.first))
 				{
-					Node<const Key, T> *newone= _alloc.allocate(1);
-					_alloc.construct(newone, data);
-					if (!root)
+					Node<const Key, T> *newone= new_node(data);
+					if (!root || root == _null)
 					{
 						newone->isBlack = 1;
 						root = newone;
@@ -439,11 +454,11 @@ namespace ft
 			Node<const Key, T> *search_utils(ft::pair<const Key, T> n)
 			{
 				Node<const Key, T> *tmp = root;
-				while (tmp)
+				while (tmp != _null)
 				{
 					if (n.first < tmp->content.first)
 					{
-						if (!tmp->left)
+						if (tmp->left == _null)
 							return (tmp);
 						tmp = tmp->left;
 					}
@@ -451,7 +466,7 @@ namespace ft
 						return (tmp);
 					else
 					{
-						if (!tmp->right)
+						if (tmp->right == _null)
 							return (tmp);
 						else
 							tmp = tmp->right;
@@ -462,11 +477,11 @@ namespace ft
 			T search(const Key &n)
 			{
 				Node<const Key, T> *tmp = root;
-				while (tmp)
+				while (tmp != _null)
 				{
 					if (n < tmp->content.first)
 					{
-						if (!tmp->left)
+						if (tmp->left == _null)
 							return (0);
 						tmp = tmp->left;
 					}
@@ -474,7 +489,7 @@ namespace ft
 						return (tmp->content.second);
 					else
 					{
-						if (!tmp->right)
+						if (tmp->right == _null)
 							return (0);
 						else
 							tmp = tmp->right;
@@ -492,7 +507,7 @@ namespace ft
 			}
 			void ft_print(Node< const Key, T> *node)
 			{
-				if (node)
+				if (node != _null)
 				{
 					ft_print(node->left);
 					ft_print(node->right);
@@ -501,7 +516,7 @@ namespace ft
 			}
 			void ft_print()
 			{
-				if (root)
+				if (root != _null)
 				{
 					ft_print(root->left);
 					ft_print(root->right);

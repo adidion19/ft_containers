@@ -6,12 +6,12 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 14:22:36 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/18 15:55:23 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BINARY_TREE2_HPP
-# define BINARY_TREE2_HPP
+#ifndef BINARY_TREE_HPP
+# define BINARY_TREE_HPP
 
 # include "pair.hpp"
 # include "map_iterator.hpp"

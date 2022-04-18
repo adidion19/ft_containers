@@ -6,12 +6,12 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 11:36:55 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 14:22:29 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/18 15:55:18 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_ITERATOR2_HPP
-#define MAP_ITERATOR2_HPP
+#ifndef MAP_ITERATOR_HPP
+#define MAP_ITERATOR_HPP
 
 #include "iterator.hpp"
 #include "binary_tree.hpp"

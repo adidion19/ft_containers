@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:01:20 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/14 13:25:38 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/18 14:22:25 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include <exception>
 #include "iterator.hpp"
 # include "pair.hpp"
-# include "binary_tree2.hpp"
+# include "binary_tree.hpp"
 #include "reverse_iterator.hpp"
-#include "map_iterator2.hpp"
+#include "map_iterator.hpp"
 
 namespace ft
 {
@@ -41,11 +41,11 @@ namespace ft
 			typedef int																difference_type;
 			typedef size_t															size_type;
 			typedef ft::Node<const Key, T>											node;
+			typedef ft::Binary_tree<key_type, mapped_type, key_compare, allocator_type>	Binary_tree;
 			typedef typename ft::map_iterator<value_type, node>						iterator;
 			typedef	ft::map_iterator<const value_type, node>						const_iterator;
-			typedef	ft::reverse_random_access_iterator<iterator> 					reverse_iterator;
-			typedef	ft::reverse_random_access_iterator<const_iterator>				const_reverse_iterator;
-			typedef ft::Binary_tree<key_type, mapped_type, key_compare, allocator_type>	Binary_tree;
+			typedef ft::reverse_map_iterator<value_type, node>						reverse_iterator;
+			typedef ft::reverse_map_iterator<const value_type, node>				const_reverse_iterator;
 		private:
 			class value_compare
 			{
@@ -92,9 +92,9 @@ namespace ft
 		// OPERATEUR =
 			map& operator= (const map& x)
 			{
-				_rb = x._rb;
-				_cmp = x.key_comp();
-				_alloc = x.get_allocator();
+				_rb = x._rb;//insert(x.begin(), x.end());
+				_alloc = x._alloc;
+				_cmp = x._cmp;
 				return (*this);
 			}
 		// ITERATEURS
@@ -116,19 +116,19 @@ namespace ft
 			}
 			reverse_iterator rbegin()
 			{
-				return (reverse_iterator(_rb.begin()));
+				return (reverse_iterator(_rb.rbegin()));
 			}
 			const_reverse_iterator rbegin() const
 			{
-				return (const_reverse_iterator(_rb.begin()));
+				return (const_reverse_iterator(_rb.rbegin()));
 			}
 			reverse_iterator rend()
 			{
-				return (reverse_iterator(_rb.end()));
+				return (reverse_iterator(_rb.rend()));
 			}
 			const_reverse_iterator rend() const
 			{
-				return (const_reverse_iterator(_rb.end()));
+				return (const_reverse_iterator(_rb.rend()));
 			}
 		//CAPACITY
 			bool empty() const
@@ -184,17 +184,28 @@ namespace ft
 					++first;
 				}
 			}
-			//void erase (iterator position);
+			void erase (iterator position)
+			{
+				key_type tmp = position->first;
+				_rb.delete_one(tmp);
+			}
 			size_type erase (const key_type& k)
 			{
-				_rb.delete_one(k);
+				return (_rb.delete_one(k));
 			}
-			//void erase (iterator first, iterator last);
+			void erase (iterator first, iterator last)
+			{
+				_rb.ft_free(first, last);
+			}
 			void swap (map& x)
 			{
-				map a = x;
-				x = *this;
-				*this = a;
+				key_compare tmp = x._cmp;
+				x._cmp = _cmp;
+				_cmp = tmp;
+				allocator_type tmp2 = x._alloc;
+				x._alloc = _alloc;
+				_alloc = tmp2;
+				_rb.ft_swap(x._rb);
 			}
 			void clear()
 			{
@@ -210,15 +221,42 @@ namespace ft
 				return (value_compare(_cmp));
 			}
 		// OPERATIONS
-			//iterator find (const key_type& k);
-			//const_iterator find (const key_type& k) const;
-			//size_type count (const key_type& k) const;
-			//iterator lower_bound (const key_type& k);
-			//const_iterator lower_bound (const key_type& k) const;
-			//iterator upper_bound (const key_type& k);
-			//const_iterator upper_bound (const key_type& k) const;
-			//pair<const iterator, const iterator> equal_range (const key_type& k) const;
-			//pair<iterator,iterator> equal_range (const key_type& k);
+			iterator find (const key_type& k)
+			{
+				return (_rb.find(k));
+			}
+			const_iterator find (const key_type& k) const
+			{
+				return (_rb.find(k));
+			}
+			size_type count (const key_type& k) const
+			{
+				return (_rb.count(k));
+			}
+			iterator lower_bound (const key_type& k)
+			{
+				return (_rb.lower_bound(k));
+			}
+			const_iterator lower_bound (const key_type& k) const
+			{
+				return (_rb.lower_bound(k));
+			}
+			iterator upper_bound (const key_type& k)
+			{
+				return (_rb.upper_bound(k));
+			}
+			const_iterator upper_bound (const key_type& k) const
+			{
+				return (_rb.upper_bound(k));
+			}
+			pair<const_iterator, const_iterator> equal_range (const key_type& k) const
+			{
+				return (_rb.equal_range(k));
+			}
+			pair<iterator,iterator> equal_range (const key_type& k)
+			{
+				return (_rb.equal_range(k));
+			}
 		// ALLOCATOR
 			allocator_type get_allocator() const
 			{
@@ -237,8 +275,11 @@ namespace ft
 	//bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs );
 	//template< class Key, class T, class Compare, class Alloc >
 	//bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs );
-	//template< class Key, class T, class Compare, class Alloc >
-	//void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs );
+	template< class Key, class T, class Compare, class Alloc >
+	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs)
+	{
+		lhs.swap(rhs);
+	}
 }
 
 #endif

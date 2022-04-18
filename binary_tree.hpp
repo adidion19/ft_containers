@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   binary_tree2.hpp                                   :+:      :+:    :+:   */
+/*   binary_tree.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/14 12:59:53 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/18 14:22:36 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define BINARY_TREE2_HPP
 
 # include "pair.hpp"
-# include "map_iterator2.hpp"
+# include "map_iterator.hpp"
 
 namespace ft
 {
@@ -42,8 +42,8 @@ namespace ft
 			typedef int													difference_type;
 			typedef ft::map_iterator<value_type, Node>					iterator;
 			typedef ft::map_iterator<const value_type, Node>			const_iterator;
-			//typedef ft::map_reverse_iterator<value_type, Node>			reverse_iterator;
-			//typedef ft::map_reverse_iterator<const value_type, Node>	const_reverse_iterator;
+			typedef ft::reverse_map_iterator<value_type, Node>			reverse_iterator;
+			typedef ft::reverse_map_iterator<const value_type, Node>	const_reverse_iterator;
 		private:
 			Node *null_node;
 			Node *root;
@@ -286,7 +286,7 @@ namespace ft
 					root = node2;
 				return (node2);
 			}
-			const_iterator	ft_find(const key_type& k)
+			const_iterator	ft_find(const key_type& k) const
 			{
 				if (root == null_node)
 					return (end());
@@ -300,6 +300,23 @@ namespace ft
 				}
 				if (max->data.first == k)
 					return(const_iterator(max, null_node, root));
+				else
+					return (end());
+			}
+			iterator	ft_find(const key_type& k)
+			{
+				if (root == null_node)
+					return (end());
+				Node *max = ft_max(root);
+				Node *min = ft_min(root);
+				while(min != max)
+				{
+					if (min->data.first == k)
+						return(iterator(min, null_node, root));
+					min = ft_next(min);
+				}
+				if (max->data.first == k)
+					return(iterator(max, null_node, root));
 				else
 					return (end());
 			}
@@ -329,8 +346,8 @@ namespace ft
 					while (min != max)
 					{
 						if (min->data.first == it->first)
-							tmp = ft_search(min);
-						min = ft_search(min);
+							tmp = ft_next(min);
+						min = ft_next(min);
 					}
 					if (max->data.first == it->first)
 						tmp = null_node;
@@ -347,13 +364,13 @@ namespace ft
 					return (0);
 				return (1);
 			}
-			void delete_one (const key_type& i)
+			unsigned int delete_one (const key_type& i)
 			{
-				size_type ret  = 0;
+				unsigned int ret  = 0;
 				if (ft_count(i))
 					ret = 1;
 				delete_node(root, i);
-				return ;
+				return (ret);
 			}
 			Node* ft_min(Node *node) const
 			{
@@ -364,7 +381,7 @@ namespace ft
 			Node* ft_max(Node *node) const
 			{
 				if (node->right && node->right != null_node)
-					return (ft_min(node->right));
+					return (ft_max(node->right));
 				return (node);
 			}
 			Node* ft_search(Node * node) const
@@ -405,11 +422,33 @@ namespace ft
 			{
 				return (const_iterator(null_node, null_node, root));
 			}
+			reverse_iterator rbegin()
+			{
+				if (root == null_node)
+					return (reverse_iterator(root, null_node, root));
+				Node *tmp = ft_max(root);
+				return (reverse_iterator(tmp, null_node, root));
+			}
+			const_reverse_iterator rbegin() const
+			{
+				if (root == null_node)
+					return (const_reverse_iterator(root, null_node, root));
+				Node *tmp = ft_max(root);
+				return (const_reverse_iterator(tmp, null_node, root));
+			}
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(null_node, null_node, root));
+			}
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(null_node, null_node, root));
+			}
 			unsigned int size() const
 			{
 				unsigned int size = 0;
-				for(const_iterator it = this->begin(); it !=this->end(); ++it)
-					size++;
+				for (const_iterator it = begin() ; it != end() ; ++it)
+					++size;
 				return (size);
 			}
 			unsigned int ft_count(Node *node, unsigned int *i) const
@@ -444,6 +483,123 @@ namespace ft
 					}
 					return (tmp->data.second);
 				}
+				return (0);
+			}
+			void ft_swap(Binary_tree &obj)
+			{
+				Node *tmp = obj.null_node;
+				obj.null_node = null_node;
+				null_node = tmp;
+				Node *tmp2 = obj.root;
+				obj.root = root;
+				root = tmp2;
+				key_compare tmp3 = obj._k;
+				obj._k = _k;
+				_k = tmp3;
+				allocator_type tmp4 = obj._alloc;
+				obj._alloc = _alloc;
+				_alloc = tmp4;
+				allocator_type_node tmp5 = obj._alloc_node;
+				obj._alloc_node = _alloc_node;
+				_alloc_node = tmp5;
+			}
+			iterator upper_bound(const key_type& key)
+			{
+				if (root == null_node)
+					return (end());
+				iterator a = begin();
+				for(; a != end(); ++a)
+					if (_k(key, a->first))
+						return (a);
+				return (a);
+			}
+			const_iterator upper_bound(const key_type& key) const
+			{
+				if (root == null_node)
+					return (end());
+				const_iterator a = begin();
+				for(; a != end(); ++a)
+					if (_k(key, a->first))
+						return (a);
+				return (a);
+			}
+			iterator lower_bound(const key_type& key)
+			{
+				if (root == null_node)
+					return (end());
+				iterator a = begin();
+				for(; a != end(); ++a)
+					if (!_k(a->first, key))
+						return (a);
+				return (a);
+			}
+			const_iterator lower_bound(const key_type& key) const
+			{
+				if (root == null_node)
+					return (end());
+				const_iterator a = begin();
+				for(; a != end(); ++a)
+					if (!_k(a->first, key))
+						return (a);
+				return (a);
+			}
+			pair<iterator, iterator> equal_range(const key_type& key)
+			{
+				iterator it;
+				iterator ite = upper_bound(key);
+				if (lower_bound(key) != end())
+					it = lower_bound(key);
+				else
+					it = upper_bound(key);
+				return (ft::make_pair<iterator, iterator>(it, ite));
+			}
+			pair<const_iterator, const_iterator> equal_range(const key_type& key) const
+			{
+				const_iterator it;
+				const_iterator ite = upper_bound(key);
+				if (lower_bound(key) != end())
+					it = lower_bound(key);
+				else
+					it = upper_bound(key);
+				return (ft::make_pair<const_iterator, const_iterator>(it, ite));
+			}
+			iterator find(const key_type& key)
+			{
+				if (root == null_node)
+					return (end());
+				Node *min = ft_min(root);
+				Node *max = ft_max(root);
+				while(min != max)
+				{
+					if (min->data.first == key)
+						return (iterator(min, null_node, root));
+					min = ft_next(min);
+				}
+				if (key == max->data.first)
+					return (iterator(max, null_node, root));
+				return end();
+			}
+			const_iterator find(const key_type& key) const
+			{
+				if (root == null_node)
+					return (end());
+				Node *min = ft_min(root);
+				Node *max = ft_max(root);
+				while(min != max)
+				{
+					if (min->data.first == key)
+						return (const_iterator(min, null_node, root));
+					min = ft_next(min);
+				}
+				if (key == max->data.first)
+					return (const_iterator(max, null_node, root));
+				return end();
+			}
+			size_type count( const key_type& key ) const
+			{
+				const_iterator it = find(key);
+				if (find(key) != end())
+					return (1);
 				return (0);
 			}
 			// FOR ME

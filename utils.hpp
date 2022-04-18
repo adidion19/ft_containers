@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:11:45 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/29 15:05:04 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/15 14:26:05 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,30 @@ namespace ft
 			}
 		}
 		return 1;
+	}
+
+	template <class InputIterator1, class InputIterator2>
+	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
+	{
+		while (first1!=last1)
+		{
+			if (first2==last2 || *first2<*first1) return false;
+			else if (*first1<*first2) return true;
+			++first1; ++first2;
+		}
+		return (first2!=last2);
+	}
+
+	template <class InputIterator1, class InputIterator2, class Compare>
+	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2, Compare comp)
+	{
+		while (first1!=last1)
+		{
+			if (first2==last2 || !comp(*first2, *first1)) return false;
+			else if (!comp(*first2, *first1)) return true;
+			++first1; ++first2;
+		}
+		return (first2!=last2);
 	}
 }
 

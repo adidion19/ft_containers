@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 15:55:09 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 16:06:47 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/18 16:52:34 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ namespace ft
 			typedef T				value_type;
 			typedef Container		container_type;
 		private:
-			container_type		c;
 		public:
+			container_type		c;
 			explicit stack (const container_type& ctnr = container_type())
 			{
 				c = ctnr;

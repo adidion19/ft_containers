@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:01:20 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 14:31:19 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/18 17:44:02 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ namespace ft
 		// OPERATEUR =
 			map& operator= (const map& x)
 			{
+				clear();
 				_rb = x._rb;//insert(x.begin(), x.end());
 				_alloc = x._alloc;
 				_cmp = x._cmp;

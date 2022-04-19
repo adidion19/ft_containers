@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 15:55:23 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/18 18:09:51 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ namespace ft
 				while (it != ite)
 				{
 					insert(ft::make_pair(it->first, it->second));
-					it++;
+					++it;
 				}
 				return (*this);
 			}
@@ -218,14 +218,14 @@ namespace ft
 				int sort = ft_sort(node);
 				if (sort > 1 && ft_sort(node->left) >= 0)
 					node = right_rotate(node);
-				if (sort > 1 && ft_sort(node->left) < 0)
+				else if (sort > 1 && ft_sort(node->left) < 0)
 				{
 					node->left = left_rotate(node->left);
 					node = right_rotate(node);
 				}
-				if (sort < -1 && ft_sort(node->right) <= 0)
+				else if (sort < -1 && ft_sort(node->right) <= 0)
 					node = left_rotate(node);
-				if (sort < -1 && ft_sort(node->right) > 0)
+				else if (sort < -1 && ft_sort(node->right) > 0)
 				{
 					node->right = right_rotate(node->right);
 					node = left_rotate(node);
@@ -338,7 +338,7 @@ namespace ft
 			}
 			void ft_free(iterator it, iterator ite)
 			{
-				while(it != ite)
+				while (it != ite)
 				{
 					Node *max = ft_max(root);
 					Node *min = ft_min(root);

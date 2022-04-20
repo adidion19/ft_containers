@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/19 18:19:10 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/20 14:03:04 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/20 17:04:17 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,10 @@ int main()
 	std::cout << "----LOWER_BOUND----" << std::endl;
 	it = a.lower_bound(4427);
 	std::cout << "at index " << it->first << " : value = " << a[it->first] << std::endl;
+	std::cout << "----EQUAL_RANGE----" << std::endl;
+	NAMESPACE::pair<NAMESPACE::map<int, float>::iterator, NAMESPACE::map<int, float>::iterator> eq = a.equal_range(4427);
+	std::cout << "lower_bound at index " << eq.first->first << " : value = " << a[eq.first->first] << std::endl;
+	std::cout << "upper_bound at index " << eq.second->first << " : value = " << a[eq.second->first] << std::endl;
 	std::cout << "----RBEGIN + REND----" << std::endl;
 	NAMESPACE::map<int, float>::reverse_iterator rit = a.rbegin(), rite = a.rend();
 	while (rit != rite)

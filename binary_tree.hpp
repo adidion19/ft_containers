@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 12:49:06 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 18:09:51 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/20 14:46:13 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -603,24 +603,24 @@ namespace ft
 				return (0);
 			}
 			// FOR ME
-			void ft_print(Node*node)
-			{
-				if (node != null_node)
-				{
-					ft_print(node->left);
-					ft_print(node->right);
-					std::cout << node->data.second << std::endl;
-				}
-			}
-			void ft_print()
-			{
-				if (root != null_node)
-				{
-					ft_print(root->left);
-					ft_print(root->right);
-					std::cout << "root : " << root->data.second << std::endl;
-				}
-			}
+			//void ft_print(Node*node)
+			//{
+			//	if (node != null_node)
+			//	{
+			//		ft_print(node->left);
+			//		ft_print(node->right);
+			//		std::cout << node->data.second << std::endl;
+			//	}
+			//}
+			//void ft_print()
+			//{
+			//	if (root != null_node)
+			//	{
+			//		ft_print(root->left);
+			//		ft_print(root->right);
+			//		std::cout << "root : " << root->data.second << std::endl;
+			//	}
+			//}
 	};
 }
 

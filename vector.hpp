@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:07:31 by adidion           #+#    #+#             */
-/*   Updated: 2022/03/28 12:11:11 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/19 15:47:32 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,21 @@ namespace ft
 			std::size_t _size;
 			std::size_t _capacity;
 			value_type *_v;
-		protected:
-			/* data */
 		public:
 		// CONSTRUCTEURS:
 			explicit vector (const allocator_type& alloc = allocator_type()): _alloc(alloc), _size(0), _capacity(0)
 			{
-				this->_v = this->_alloc.allocate(0);
+				_v = _alloc.allocate(0);
 				return ;
 			}
 			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): _alloc(alloc), _size(n), _capacity(n)
 			{
 				if (n < 0)
 					throw (std::out_of_range("vector"));
-				this->_v = this->_alloc.allocate(n);
+				_v = _alloc.allocate(n);
 				for(unsigned int i = 0; i < n; i++)
 				{
-					this->_alloc.construct(&_v[i], val);
+					_alloc.construct(&_v[i], val);
 				}
 				return ;
 			}
@@ -88,9 +86,9 @@ namespace ft
 			{
 				for (unsigned int i = 0; i != this->_size; i++)
 				{
-					this->_alloc.destroy(&_v[i]);
+					_alloc.destroy(&_v[i]);
 				}
-				this->_alloc.deallocate(_v, this->_capacity);
+				_alloc.deallocate(_v, this->_capacity);
 				return ;
 			}
 		// OPERATEURS:
@@ -121,13 +119,13 @@ namespace ft
 			iterator end()
 			{
 				if (_size == 0)
-					return (this->begin());
+					return (begin());
 				return (iterator(_v + _size));
 			}
 			const_iterator end() const
 			{
 				if (_size == 0)
-					return (this->begin());
+					return (begin());
 				return (const_iterator(_v + _size));
 			}
 			reverse_iterator rbegin()
@@ -218,7 +216,6 @@ namespace ft
 			{
 				return (_v[n]);
 			}
-			//
 			reference at (size_type n)
 			{
 				if (n >= _size)
@@ -249,7 +246,6 @@ namespace ft
 			{
 				return (_v[_size - 1]);
 			}
-			//
 		// MODIFIERS:
 			template <class InputIterator>
 			void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = nullptr)
@@ -283,13 +279,13 @@ namespace ft
 			}
 			void push_back (const value_type& val)
 			{
-				if (this->_size >= this->_capacity)
+				if (_size >= _capacity)
 				{
-					size_type n = this->_capacity == 0 ? 2 : this->_capacity * 2;
-					this->reserve(n);
+					size_type n = _capacity == 0 ? 2 : _capacity * 2;
+					reserve(n);
 				}
-				this->_alloc.construct(&_v[_size], val);
-				this->_size += 1;
+				_alloc.construct(&_v[_size], val);
+				_size += 1;
 			}
 			void pop_back()
 			{
@@ -415,7 +411,7 @@ namespace ft
 			}
 			void clear()
 			{
-				for (unsigned int i = 0; i != this->_size; i++)
+				for (unsigned int i = 0; i != _size; i++)
 				{
 					_alloc.destroy(&_v[i]);
 				}

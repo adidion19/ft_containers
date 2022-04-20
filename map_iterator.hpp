@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 11:36:55 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 15:55:18 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/20 14:38:17 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,10 +129,6 @@ namespace ft
 			{
 				return (a->data);
 			}
-			//map_iterator<value_type, Node> base() const
-			//{
-			//	return (*this);
-			//}
 			pointer operator->() const
 			{
 				return (&(a)->data);

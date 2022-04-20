@@ -6,7 +6,7 @@
 /*   By: adidion <adidion@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 14:01:20 by adidion           #+#    #+#             */
-/*   Updated: 2022/04/18 17:44:02 by adidion          ###   ########.fr       */
+/*   Updated: 2022/04/20 10:50:01 by adidion          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,20 +151,6 @@ namespace ft
 			mapped_type& operator[] (const key_type& k)
 			{
 				return (*((insert(ft::make_pair(k,mapped_type()))).first)).second;
-			}
-			T& at( const Key& key )
-			{
-				T s = _rb.search(key);
-				if (!s)
-					throw(std::out_of_range("map"));
-				return (s);
-			}
-			const T& at( const Key& key ) const
-			{
-				T s = _rb.search(key);
-				if (!s)
-					throw(std::out_of_range("map"));
-				return (s);
 			}
 		// MODIFIERS
 			pair<iterator,bool> insert (const value_type& val)
